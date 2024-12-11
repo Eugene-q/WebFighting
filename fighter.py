@@ -27,12 +27,12 @@ HITTED = 4
 DEAD = 5
 
 LOGGING_LEVEL = mainlog.DEBUG
-NOT_LOGGING_FUNCTION = ('')
+NOT_LOGGING_FUNCTION = ('sub_func',)
 
 mainlog.basicConfig(level=LOGGING_LEVEL,
                 format='%(levelname)s %(message)s')
 log = mainlog.getLogger('log_to_file')
-fhandler = mainlog.FileHandler(filename='log.txt', mode='a')
+fhandler = mainlog.FileHandler(filename='log_client.txt', mode='a')
 formatter = mainlog.Formatter('%(asctime)s, %(levelname)s, %(message)s, %(funcName)s, %(lineno)s, %(filename)s')
 
 fhandler.setFormatter(formatter)

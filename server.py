@@ -19,6 +19,7 @@ START_POSITIONS = (int(SCREEN_WIDTH / 5),
 SERVER = 'localhost'
 PORT = 5555
 
+FIGHT_TIME = 600
 
 STAY = 0
 GO = 1
@@ -31,7 +32,7 @@ READY = 1
 IN_GAME = 0
 
 LOGGING_LEVEL = mainlog.DEBUG
-NOT_LOGGING_FUNCTION = ('apply_options', 'send_data', 'recieve', 'update', 'get_self_state')
+NOT_LOGGING_FUNCTION = ('apply_options', 'send_data', 'recieve', 'update', 'get_self_state', 'sub_func')
 
 mainlog.basicConfig(level=LOGGING_LEVEL,
                 format='%(levelname)s %(message)s')
@@ -250,21 +251,23 @@ def recieve(client_socket,):
 
 def get_game_state():
     global players
-    players_state = {}
+    game_state = {}
     for id, player in players.items():
         if player:
-            players_state[id] = player.get_self_state()
-    return players_state
+            game_state[id] = player.get_self_state()
+    game_state['timer'] = timer
+    return game_state
 
 @to_log
 def threaded_referee():
-    global game_started, alive_players_num, max_players_num
+    global game_started, alive_players_num, max_players_num, timer
     while True:
         if game_started:
             log.info('Referee: game started!')
-            
+            timer = FIGHT_TIME
             while not players_is_ready():
-                time.sleep(0.15)
+                time.sleep(1)
+                timer -= 1
             game_started = False
             alive_players_num = 0
             max_players_num = 0
@@ -281,7 +284,7 @@ def threaded_player(current_player):
         current_player.set_start()
         log.info(f'Player {current_player.id} is ready!')
         start_state = {'current_player_id' : current_player.id}
-        global connected_players_num, alive_players_num, max_players_num, game_started
+        global connected_players_num, alive_players_num, max_players_num, game_started, timer
       #  while connected_players_num < 2:
        #     print(connected_players_num, 'кол-во игроков')
         #    time.sleep(1)

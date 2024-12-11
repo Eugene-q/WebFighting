@@ -1,7 +1,7 @@
 import easy_pygame as epg
 from easy_pygame import UP, DOWN, LEFT, RIGHT
 import pygame as pg
-from fighter import Fighter
+from fighter import *
 import connection
 import os
 import time
@@ -42,33 +42,6 @@ BUTTON_DISABLED_IMAGE_PATH = 'photos/disabled.jpeg'
 
 SERVER = 'localhost'
 PORT = 5555
-
-LOGGING_LEVEL = mainlog.DEBUG
-NOT_LOGGING_FUNCTION = ('get_pressed', 'taped', 'check_options')
-
-mainlog.basicConfig(level=LOGGING_LEVEL,
-                format='%(levelname)s %(message)s')
-log = mainlog.getLogger('log_to_file')
-fhandler = mainlog.FileHandler(filename='log.txt', mode='a')
-formatter = mainlog.Formatter('%(asctime)s, %(levelname)s, %(message)s, %(funcName)s, %(lineno)s, %(filename)s')
-
-fhandler.setFormatter(formatter)
-log.addHandler(fhandler)
-
-def to_log(func):
-    def sub_func(*args, **kwargs):
-        if not func.__name__ in NOT_LOGGING_FUNCTION:
-            log.info(f"** {func.__name__} **")
-        result = func(*args, **kwargs)
-        return result
-    return sub_func
-
-def log_class(class_to_log, ):
-    class_name = class_to_log.__name__
-    for name, method in inspect.getmembers(class_to_log):
-        if inspect.isfunction(method):
-            setattr(class_to_log, name, to_log(method))
-    return class_to_log
 
 
 @log_class
@@ -234,6 +207,8 @@ def fight():
             if fighter.id == current_fighter_id:
                 options = fighter.check_options()
                 game_state = server.get_game_state(options)
+                timer = game_state.pop('timer')
+                log.info(f'Timer:{timer}')
                 break
         if game_state == 'finish':
             for fighter in fighters:
