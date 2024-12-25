@@ -20,6 +20,8 @@ SERVER = 'localhost'
 PORT = 5555
 
 FIGHT_TIME = 600
+timer = FIGHT_TIME
+recent_time = 0
 
 STAY = 0
 GO = 1
@@ -250,12 +252,16 @@ def recieve(client_socket,):
         return data
 
 def get_game_state():
-    global players
+    global players, timer, recent_time
     game_state = {}
     for id, player in players.items():
         if player:
             game_state[id] = player.get_self_state()
-    game_state['timer'] = timer
+    if timer != recent_time:
+        game_state['timer'] = timer
+        recent_time = timer
+    else:
+        game_state['timer'] = None
     return game_state
 
 @to_log
@@ -265,7 +271,7 @@ def threaded_referee():
         if game_started:
             log.info('Referee: game started!')
             timer = FIGHT_TIME
-            while not players_is_ready():
+            while not players_is_ready() and timer > 0:
                 time.sleep(1)
                 timer -= 1
             game_started = False

@@ -179,6 +179,12 @@ def start_game():
     create_fighters(start_game_state, show=False)
     menu.enable_button('играть')
 
+def get_str_time(int_time):
+    seconds = int_time % 60
+    minutes = int_time // 60
+    str_time = f'{minutes} : {seconds}'
+    return str_time
+
 @to_log
 def create_fighters(game_state, show=True):
     global fighters
@@ -207,8 +213,6 @@ def fight():
             if fighter.id == current_fighter_id:
                 options = fighter.check_options()
                 game_state = server.get_game_state(options)
-                timer = game_state.pop('timer')
-                log.info(f'Timer:{timer}')
                 break
         if game_state == 'finish':
             for fighter in fighters:
@@ -223,6 +227,10 @@ def fight():
                 print(f'game_state: {game_state}')
                 continue
             fighter.apply_game_state(fighter_state)
+        timer = game_state.pop('timer')
+        if not timer == None:
+            label_timer.set_value(get_str_time(timer))
+        log.info(f'Timer:{timer}')
         if len(game_state) > len(fighters):
             print('new fighters on server')
             new_fighters = {}
@@ -251,6 +259,15 @@ label_game_over = epg.Label(text='GAME OVER',
                         show=False,
                         )
     
+label_timer = epg.Label(text='',
+                        val=0,
+                        x=WIDTH_HALF,
+                        y=100,
+                        center=True,
+                        size=50,
+                        show=False,
+                        )
+    
 menu = Menu(screen,
             BACK_IMAGE_PATH, 
             ('играть', 'выйти'),
@@ -274,7 +291,9 @@ while True:
     if choice == 'играть':
         server.send('Игра началась!')
         screen.set_background(EARTH_IMAGE_PATH)
+        label_timer.show()
         fight()
+        label_timer.hide()
         fighters = []
         label_game_over.show()
         update()
