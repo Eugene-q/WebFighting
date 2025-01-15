@@ -30,6 +30,8 @@ ATTACK = 3
 HITTED = 4
 DEAD = 5
 
+CONNECTED = 3 #в меню
+WAITING = 2   #ждет от остальных игроков
 READY = 1
 IN_GAME = 0
 
@@ -57,11 +59,7 @@ start_socket.bind((SERVER, PORT))
 start_socket.listen(2)
 log.info('Сервер запущен')
 
-players = {0 : None,
-		   1 : None,
-		   2 : None,
-		   3 : None,
-		   }
+players = {num:None for num in range(20)}
 
 game_started = False
 
@@ -217,7 +215,21 @@ class Rect:
         return enemies
 
 
-def players_is_ready():
+class Ring(threading.Thread):
+    def __init__(self, players_num, playing_time=10):
+        super().__init__(self)
+        self.timer = playing_time
+        self.players_num = players_num
+        self.players = []
+    
+    def add_player(self, player):
+        self.players.append(player)
+     
+    def run(self,):
+        pass
+
+
+def waiting_players():
     result = True
     for player in players.values():
         if player:
@@ -332,6 +344,7 @@ def threaded_player(current_player):
     remove_player(current_player.id)
 
 threading.Thread(target=threaded_referee, daemon=True).start()
+#создать объект ринга и админа
 
 while True:
     player_socket, adress = start_socket.accept()

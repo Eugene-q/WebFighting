@@ -22722,3 +22722,331 @@ ter.py
 2024-12-18 21:12:14,293, INFO, Referee: game over!, threaded_referee, 280, server.py
 2024-12-25 14:15:52,947, INFO, Сервер запущен, <module>, 58, server.py
 2024-12-25 14:15:52,947, INFO, ** threaded_referee **, sub_func, 75, server.py
+2024-12-25 14:16:11,186, INFO, Подключился игрок с адресом : ('127.0.0.1', 55288), <module>, 338, server.py
+2024-12-25 14:16:11,186, INFO, ** __init__ **, sub_func, 75, server.py
+2024-12-25 14:16:11,186, INFO, ** threaded_player **, sub_func, 75, server.py
+2024-12-25 14:16:11,187, DEBUG, Игрок создан с id : 0, threaded_player, 287, server.py
+2024-12-25 14:16:11,187, INFO, ** set_start **, sub_func, 75, server.py
+2024-12-25 14:16:11,187, INFO, Player 0 is ready!, threaded_player, 291, server.py
+2024-12-25 14:16:11,187, DEBUG, player id: 0 start state: {'current_player_id': 0, 0: (False, 160, 385, 130, 130)}, threaded_player, 306, server.py
+2024-12-25 14:16:22,583, INFO, Подключился игрок с адресом : ('127.0.0.1', 55291), <module>, 338, server.py
+2024-12-25 14:16:22,584, INFO, ** __init__ **, sub_func, 75, server.py
+2024-12-25 14:16:22,584, INFO, ** threaded_player **, sub_func, 75, server.py
+2024-12-25 14:16:22,584, DEBUG, Игрок создан с id : 1, threaded_player, 287, server.py
+2024-12-25 14:16:22,585, INFO, ** set_start **, sub_func, 75, server.py
+2024-12-25 14:16:22,585, INFO, Player 1 is ready!, threaded_player, 291, server.py
+2024-12-25 14:16:22,585, DEBUG, player id: 1 start state: {'current_player_id': 1, 0: (False, 160, 385, 130, 130), 1: (True, 640, 385, 130, 130)}, threaded_player, 306, server.py
+2024-12-25 14:16:24,225, DEBUG, Player 1: start main cycle. alive_players_num: 1, max_players_num: 1, threaded_player, 311, server.py
+2024-12-25 14:16:24,262, INFO, Referee: game started!, threaded_referee, 272, server.py
+2024-12-25 14:16:24,316, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 249, server.py
+2024-12-25 14:16:24,316, ERROR, Потерянно соеденение с : 1 игрок отключился, threaded_player, 316, server.py
+2024-12-25 14:16:24,316, INFO, ** remove_player **, sub_func, 75, server.py
+2024-12-25 14:16:24,316, DEBUG, игрок закончился с id : 1, remove_player, 232, server.py
+2024-12-25 14:16:25,262, INFO, Referee: game over!, threaded_referee, 280, server.py
+2024-12-25 14:31:17,630, DEBUG, Player 0: start main cycle. alive_players_num: 1, max_players_num: 1, threaded_player, 311, server.py
+2024-12-25 14:31:17,721, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 249, server.py
+2024-12-25 14:31:17,721, ERROR, Потерянно соеденение с : 0 игрок отключился, threaded_player, 316, server.py
+2024-12-25 14:31:17,721, INFO, ** remove_player **, sub_func, 75, server.py
+2024-12-25 14:31:17,721, DEBUG, игрок закончился с id : 0, remove_player, 232, server.py
+2024-12-25 14:31:17,832, INFO, Referee: game started!, threaded_referee, 272, server.py
+2024-12-25 14:31:17,833, INFO, Referee: game over!, threaded_referee, 280, server.py
+2024-12-25 14:31:32,137, INFO, Подключился игрок с адресом : ('127.0.0.1', 55480), <module>, 338, server.py
+2024-12-25 14:31:32,137, INFO, ** __init__ **, sub_func, 75, server.py
+2024-12-25 14:31:32,138, INFO, ** threaded_player **, sub_func, 75, server.py
+2024-12-25 14:31:32,138, DEBUG, Игрок создан с id : 0, threaded_player, 287, server.py
+2024-12-25 14:31:32,138, INFO, ** set_start **, sub_func, 75, server.py
+2024-12-25 14:31:32,138, INFO, Player 0 is ready!, threaded_player, 291, server.py
+2024-12-25 14:31:32,138, DEBUG, player id: 0 start state: {'current_player_id': 0, 0: (False, 160, 385, 130, 130)}, threaded_player, 306, server.py
+2024-12-25 14:31:34,078, DEBUG, Player 0: start main cycle. alive_players_num: 1, max_players_num: 1, threaded_player, 311, server.py
+2024-12-25 14:31:34,118, INFO, Referee: game started!, threaded_referee, 272, server.py
+2024-12-25 14:31:34,175, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 249, server.py
+2024-12-25 14:31:34,175, ERROR, Потерянно соеденение с : 0 игрок отключился, threaded_player, 316, server.py
+2024-12-25 14:31:34,175, INFO, ** remove_player **, sub_func, 75, server.py
+2024-12-25 14:31:34,175, DEBUG, игрок закончился с id : 0, remove_player, 232, server.py
+2024-12-25 14:31:35,119, INFO, Referee: game over!, threaded_referee, 280, server.py
+2024-12-25 14:34:03,151, INFO, Подключился игрок с адресом : ('127.0.0.1', 55517), <module>, 338, server.py
+2024-12-25 14:34:03,152, INFO, ** __init__ **, sub_func, 75, server.py
+2024-12-25 14:34:03,153, INFO, ** threaded_player **, sub_func, 75, server.py
+2024-12-25 14:34:03,153, DEBUG, Игрок создан с id : 0, threaded_player, 287, server.py
+2024-12-25 14:34:03,153, INFO, ** set_start **, sub_func, 75, server.py
+2024-12-25 14:34:03,153, INFO, Player 0 is ready!, threaded_player, 291, server.py
+2024-12-25 14:34:03,153, DEBUG, player id: 0 start state: {'current_player_id': 0, 0: (False, 160, 385, 130, 130)}, threaded_player, 306, server.py
+2024-12-25 14:34:04,821, DEBUG, Player 0: start main cycle. alive_players_num: 1, max_players_num: 1, threaded_player, 311, server.py
+2024-12-25 14:34:04,944, INFO, Referee: game started!, threaded_referee, 272, server.py
+2024-12-25 14:34:11,389, INFO, Подключился игрок с адресом : ('127.0.0.1', 55521), <module>, 338, server.py
+2024-12-25 14:34:11,389, INFO, ** __init__ **, sub_func, 75, server.py
+2024-12-25 14:34:11,390, INFO, ** threaded_player **, sub_func, 75, server.py
+2024-12-25 14:34:11,390, DEBUG, Игрок создан с id : 1, threaded_player, 287, server.py
+2024-12-25 14:34:11,390, INFO, ** set_start **, sub_func, 75, server.py
+2024-12-25 14:34:11,390, INFO, Player 1 is ready!, threaded_player, 291, server.py
+2024-12-25 14:34:11,391, DEBUG, player id: 1 start state: {'current_player_id': 1, 0: (False, 160, 385, 130, 130), 1: (True, 640, 385, 130, 130)}, threaded_player, 306, server.py
+2024-12-25 14:34:12,931, DEBUG, Player 1: start main cycle. alive_players_num: 2, max_players_num: 2, threaded_player, 311, server.py
+2024-12-25 14:34:17,004, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:17,004, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:17,169, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:17,169, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:17,335, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:17,502, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:17,667, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:18,200, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:18,200, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:18,369, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:18,369, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:18,535, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:18,704, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:18,870, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:18,870, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:19,036, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:19,036, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:19,203, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:19,203, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:19,369, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:19,369, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:19,537, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:19,705, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:19,871, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:20,038, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:20,205, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:20,372, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:22,810, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:22,811, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:22,978, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:22,978, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:23,246, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:23,246, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:23,412, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:23,413, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:23,579, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:23,579, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:23,746, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:23,747, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:23,915, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:23,915, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:24,084, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:24,084, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:24,252, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:24,253, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:24,419, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:24,420, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:24,587, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:24,587, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:24,755, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:24,755, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:24,756, INFO, GAME OVER 1, threaded_player, 323, server.py
+2024-12-25 14:34:24,756, DEBUG, 2 max_players_num, threaded_player, 324, server.py
+2024-12-25 14:34:24,756, DEBUG, 1 alive_players_num, threaded_player, 325, server.py
+2024-12-25 14:34:24,761, INFO, GAME OVER 0, threaded_player, 323, server.py
+2024-12-25 14:34:24,761, DEBUG, 2 max_players_num, threaded_player, 324, server.py
+2024-12-25 14:34:24,761, DEBUG, 1 alive_players_num, threaded_player, 325, server.py
+2024-12-25 14:34:24,788, INFO, ** set_start **, sub_func, 75, server.py
+2024-12-25 14:34:24,788, INFO, Player 1 is ready!, threaded_player, 291, server.py
+2024-12-25 14:34:24,788, DEBUG, player id: 1 start state: {'current_player_id': 1, 0: (False, 160, 385, 130, 130), 1: (True, 640, 385, 130, 130)}, threaded_player, 306, server.py
+2024-12-25 14:34:24,794, INFO, ** set_start **, sub_func, 75, server.py
+2024-12-25 14:34:24,794, INFO, Player 0 is ready!, threaded_player, 291, server.py
+2024-12-25 14:34:24,795, DEBUG, player id: 0 start state: {'current_player_id': 0, 0: (False, 160, 385, 130, 130), 1: (True, 640, 385, 130, 130)}, threaded_player, 306, server.py
+2024-12-25 14:34:24,952, INFO, Referee: game over!, threaded_referee, 280, server.py
+2024-12-25 14:34:32,557, DEBUG, Player 1: start main cycle. alive_players_num: 1, max_players_num: 1, threaded_player, 311, server.py
+2024-12-25 14:34:32,715, INFO, Referee: game started!, threaded_referee, 272, server.py
+2024-12-25 14:34:43,133, DEBUG, Player 0: start main cycle. alive_players_num: 2, max_players_num: 2, threaded_player, 311, server.py
+2024-12-25 14:34:49,279, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:49,445, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:51,150, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:51,315, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:51,481, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:51,482, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:51,649, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:51,649, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:51,816, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:51,816, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:52,621, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:52,790, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:52,959, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:53,125, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:53,292, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:53,293, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:53,459, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:53,459, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:53,626, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:53,627, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:54,462, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:54,628, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:54,796, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:54,965, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:55,134, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:55,302, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:56,939, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:56,940, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:57,108, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:57,109, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:57,273, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:57,273, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:58,746, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:58,747, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:58,912, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:58,913, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:59,079, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:59,079, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:34:59,246, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:34:59,246, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:35:05,892, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:35:05,892, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:35:15,474, INFO, ** attack **, sub_func, 75, server.py
+2024-12-25 14:35:15,474, INFO, ** hitted **, sub_func, 75, server.py
+2024-12-25 14:35:50,906, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 249, server.py
+2024-12-25 14:35:50,906, ERROR, Потерянно соеденение с : 0 игрок отключился, threaded_player, 316, server.py
+2024-12-25 14:35:50,906, INFO, ** remove_player **, sub_func, 75, server.py
+2024-12-25 14:35:50,907, DEBUG, игрок закончился с id : 0, remove_player, 232, server.py
+2024-12-25 14:35:50,937, INFO, GAME OVER 1, threaded_player, 323, server.py
+2024-12-25 14:35:50,937, DEBUG, 2 max_players_num, threaded_player, 324, server.py
+2024-12-25 14:35:50,937, DEBUG, 1 alive_players_num, threaded_player, 325, server.py
+2024-12-25 14:35:50,970, INFO, ** set_start **, sub_func, 75, server.py
+2024-12-25 14:35:50,971, INFO, Player 1 is ready!, threaded_player, 291, server.py
+2024-12-25 14:35:50,971, DEBUG, player id: 1 start state: {'current_player_id': 1, 1: (False, 640, 385, 130, 130)}, threaded_player, 306, server.py
+2024-12-25 14:35:51,741, INFO, Referee: game over!, threaded_referee, 280, server.py
+2024-12-25 14:35:56,247, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 249, server.py
+2024-12-25 14:35:56,247, DEBUG, Player 1: start main cycle. alive_players_num: 1, max_players_num: 1, threaded_player, 311, server.py
+2024-12-25 14:35:56,247, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 249, server.py
+2024-12-25 14:35:56,247, ERROR, Потерянно соеденение с : 1 игрок отключился, threaded_player, 316, server.py
+2024-12-25 14:35:56,247, INFO, ** remove_player **, sub_func, 75, server.py
+2024-12-25 14:35:56,247, DEBUG, игрок закончился с id : 1, remove_player, 232, server.py
+2024-12-25 14:35:56,498, INFO, Referee: game started!, threaded_referee, 272, server.py
+2024-12-25 14:35:56,498, INFO, Referee: game over!, threaded_referee, 280, server.py
+2024-12-25 21:02:08,881, INFO, Сервер запущен, <module>, 60, server.py
+2024-12-25 21:02:34,625, INFO, Сервер запущен, <module>, 60, server.py
+2024-12-25 21:02:34,627, INFO, ** threaded_referee **, sub_func, 73, server.py
+2024-12-25 21:02:44,738, INFO, Подключился игрок с адресом : ('127.0.0.1', 57116), <module>, 350, server.py
+2024-12-25 21:02:44,739, INFO, ** __init__ **, sub_func, 73, server.py
+2024-12-25 21:02:44,741, INFO, ** threaded_player **, sub_func, 73, server.py
+2024-12-25 21:02:44,743, DEBUG, Игрок создан с id : 0, threaded_player, 299, server.py
+2024-12-25 21:02:44,743, INFO, ** set_start **, sub_func, 73, server.py
+2024-12-25 21:02:44,745, INFO, Player 0 is ready!, threaded_player, 303, server.py
+2024-12-25 21:02:44,746, DEBUG, player id: 0 start state: {'current_player_id': 0, 0: (False, 160, 385, 130, 130)}, threaded_player, 318, server.py
+2024-12-25 21:02:47,085, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 261, server.py
+2024-12-25 21:02:47,086, DEBUG, Player 0: start main cycle. alive_players_num: 1, max_players_num: 1, threaded_player, 323, server.py
+2024-12-25 21:02:47,086, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 261, server.py
+2024-12-25 21:02:47,086, ERROR, Потерянно соеденение с : 0 игрок отключился, threaded_player, 328, server.py
+2024-12-25 21:02:47,086, INFO, ** remove_player **, sub_func, 73, server.py
+2024-12-25 21:02:47,087, DEBUG, игрок закончился с id : 0, remove_player, 244, server.py
+2024-12-25 21:02:47,146, INFO, Referee: game started!, threaded_referee, 284, server.py
+2024-12-25 21:02:58,604, INFO, Подключился игрок с адресом : ('127.0.0.1', 57118), <module>, 350, server.py
+2024-12-25 21:02:58,604, INFO, ** __init__ **, sub_func, 73, server.py
+2024-12-25 21:02:58,605, INFO, ** threaded_player **, sub_func, 73, server.py
+2024-12-25 21:02:58,605, DEBUG, Игрок создан с id : 0, threaded_player, 299, server.py
+2024-12-25 21:02:58,605, INFO, ** set_start **, sub_func, 73, server.py
+2024-12-25 21:02:58,605, INFO, Player 0 is ready!, threaded_player, 303, server.py
+2024-12-25 21:02:58,605, DEBUG, player id: 0 start state: {'current_player_id': 0, 0: (False, 160, 385, 130, 130)}, threaded_player, 318, server.py
+2024-12-25 21:03:02,171, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 261, server.py
+2024-12-25 21:03:02,172, DEBUG, Player 0: start main cycle. alive_players_num: 1, max_players_num: 2, threaded_player, 323, server.py
+2024-12-25 21:03:02,173, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 261, server.py
+2024-12-25 21:03:02,173, ERROR, Потерянно соеденение с : 0 игрок отключился, threaded_player, 328, server.py
+2024-12-25 21:03:02,175, INFO, ** remove_player **, sub_func, 73, server.py
+2024-12-25 21:03:02,176, DEBUG, игрок закончился с id : 0, remove_player, 244, server.py
+2024-12-26 15:46:14,993, INFO, Сервер запущен, <module>, 60, server.py
+2024-12-26 15:46:14,993, INFO, ** threaded_referee **, sub_func, 73, server.py
+2024-12-26 15:46:41,204, INFO, Подключился игрок с адресом : ('127.0.0.1', 50047), <module>, 351, server.py
+2024-12-26 15:46:41,205, INFO, ** __init__ **, sub_func, 73, server.py
+2024-12-26 15:46:41,205, INFO, ** threaded_player **, sub_func, 73, server.py
+2024-12-26 15:46:41,205, DEBUG, Игрок создан с id : 0, threaded_player, 299, server.py
+2024-12-26 15:46:41,206, INFO, ** set_start **, sub_func, 73, server.py
+2024-12-26 15:46:41,206, INFO, Player 0 is ready!, threaded_player, 303, server.py
+2024-12-26 15:46:41,206, DEBUG, player id: 0 start state: {'current_player_id': 0, 0: (False, 160, 385, 130, 130)}, threaded_player, 318, server.py
+2024-12-26 15:46:51,111, INFO, Подключился игрок с адресом : ('127.0.0.1', 50049), <module>, 351, server.py
+2024-12-26 15:46:51,113, INFO, ** __init__ **, sub_func, 73, server.py
+2024-12-26 15:46:51,113, INFO, ** threaded_player **, sub_func, 73, server.py
+2024-12-26 15:46:51,113, DEBUG, Игрок создан с id : 1, threaded_player, 299, server.py
+2024-12-26 15:46:51,113, INFO, ** set_start **, sub_func, 73, server.py
+2024-12-26 15:46:51,113, INFO, Player 1 is ready!, threaded_player, 303, server.py
+2024-12-26 15:46:51,113, DEBUG, player id: 1 start state: {'current_player_id': 1, 0: (False, 160, 385, 130, 130), 1: (True, 640, 385, 130, 130)}, threaded_player, 318, server.py
+2024-12-26 15:46:52,618, DEBUG, Player 1: start main cycle. alive_players_num: 1, max_players_num: 1, threaded_player, 323, server.py
+2024-12-26 15:46:52,801, INFO, Referee: game started!, threaded_referee, 284, server.py
+2024-12-26 15:46:57,842, DEBUG, Player 0: start main cycle. alive_players_num: 2, max_players_num: 2, threaded_player, 323, server.py
+2024-12-26 15:47:01,416, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:01,586, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:02,391, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:02,391, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:05,238, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:05,404, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:05,571, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:05,571, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:05,772, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:05,772, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:05,941, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:05,941, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:06,143, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:06,143, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:06,345, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:06,346, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:06,511, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:06,511, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:06,746, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:06,748, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:09,361, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:09,361, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:09,526, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:09,526, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:10,260, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:10,260, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:10,425, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:10,425, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:10,592, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:10,592, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:10,758, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:10,924, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:11,090, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:11,090, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:11,258, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:11,259, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:11,426, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:11,426, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:11,592, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:11,759, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:11,926, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:12,093, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:12,093, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:12,259, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:12,259, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:12,425, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:12,425, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:12,592, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:12,593, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:12,759, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:12,759, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:12,927, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:12,928, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:13,095, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:13,095, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:13,262, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:13,429, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:13,430, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:13,595, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:13,596, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:13,761, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:13,761, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:13,929, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:13,929, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:14,098, INFO, ** attack **, sub_func, 73, server.py
+2024-12-26 15:47:14,099, INFO, ** hitted **, sub_func, 73, server.py
+2024-12-26 15:47:14,099, INFO, GAME OVER 1, threaded_player, 335, server.py
+2024-12-26 15:47:14,100, DEBUG, 2 max_players_num, threaded_player, 336, server.py
+2024-12-26 15:47:14,100, DEBUG, 1 alive_players_num, threaded_player, 337, server.py
+2024-12-26 15:47:14,113, INFO, GAME OVER 0, threaded_player, 335, server.py
+2024-12-26 15:47:14,114, DEBUG, 2 max_players_num, threaded_player, 336, server.py
+2024-12-26 15:47:14,114, DEBUG, 1 alive_players_num, threaded_player, 337, server.py
+2024-12-26 15:47:14,131, INFO, ** set_start **, sub_func, 73, server.py
+2024-12-26 15:47:14,132, INFO, Player 1 is ready!, threaded_player, 303, server.py
+2024-12-26 15:47:14,132, DEBUG, player id: 1 start state: {'current_player_id': 1, 0: (False, 610, 385, 130, 130), 1: (True, 640, 385, 130, 130)}, threaded_player, 318, server.py
+2024-12-26 15:47:14,146, INFO, ** set_start **, sub_func, 73, server.py
+2024-12-26 15:47:14,146, INFO, Player 0 is ready!, threaded_player, 303, server.py
+2024-12-26 15:47:14,147, DEBUG, player id: 0 start state: {'current_player_id': 0, 0: (False, 160, 385, 130, 130), 1: (True, 640, 385, 130, 130)}, threaded_player, 318, server.py
+2024-12-26 15:47:21,928, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 261, server.py
+2024-12-26 15:47:21,929, DEBUG, Player 0: start main cycle. alive_players_num: 1, max_players_num: 1, threaded_player, 323, server.py
+2024-12-26 15:47:21,929, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 261, server.py
+2024-12-26 15:47:21,929, ERROR, Потерянно соеденение с : 0 игрок отключился, threaded_player, 328, server.py
+2024-12-26 15:47:21,929, INFO, ** remove_player **, sub_func, 73, server.py
+2024-12-26 15:47:21,929, DEBUG, игрок закончился с id : 0, remove_player, 244, server.py
+2024-12-26 15:47:23,183, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 261, server.py
+2024-12-26 15:47:23,183, DEBUG, Player 1: start main cycle. alive_players_num: 1, max_players_num: 2, threaded_player, 323, server.py
+2024-12-26 15:47:23,183, ERROR, Expecting value: line 1 column 1 (char 0), recieve, 261, server.py
+2024-12-26 15:47:23,183, ERROR, Потерянно соеденение с : 1 игрок отключился, threaded_player, 328, server.py
+2024-12-26 15:47:23,183, INFO, ** remove_player **, sub_func, 73, server.py
+2024-12-26 15:47:23,184, DEBUG, игрок закончился с id : 1, remove_player, 244, server.py
