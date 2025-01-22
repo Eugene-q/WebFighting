@@ -23050,3 +23050,6 @@ ter.py
 2024-12-26 15:47:23,183, ERROR, Потерянно соеденение с : 1 игрок отключился, threaded_player, 328, server.py
 2024-12-26 15:47:23,183, INFO, ** remove_player **, sub_func, 73, server.py
 2024-12-26 15:47:23,184, DEBUG, игрок закончился с id : 1, remove_player, 244, server.py
+2025-01-22 19:17:33,415, INFO, Сервер запущен, <module>, 60, server.py
+2025-01-22 19:18:41,714, INFO, Сервер запущен, <module>, 60, server.py
+2025-01-22 19:19:27,260, INFO, Сервер запущен, <module>, 60, server.py
