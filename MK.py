@@ -213,7 +213,7 @@ def fight():
             if fighter.id == current_fighter_id:
                 options = fighter.check_options()
                 game_state = server.get_game_state(options)
-                break
+            fighter.show()
         if game_state == 'finish':
             for fighter in fighters:
                 fighter.hide()
@@ -270,11 +270,11 @@ label_timer = epg.Label(text='',
     
 menu = Menu(screen,
             BACK_IMAGE_PATH, 
-            ('играть', 'выйти'),
+            ('играть', 'выйти', 'Ринг на 2', 'Ринг на 3', 'Ринг на 4'),
             (BUTTON_RELEASED_IMAGE_PATH, BUTTON_PRESSED_IMAGE_PATH, BUTTON_DISABLED_IMAGE_PATH),
-            (110, 110),
+            (100, 100),
             button_order='h',
-            button_margin=205,
+            button_margin=80,
             )
 
 while True:

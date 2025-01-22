@@ -69,7 +69,7 @@ class Fighter(epg.Sprite):
         self.id = id
         health_bar_width = epg.WIDTH / 4 - 20
         health_bar_x = int(HEALTHBAR_POSITIONS[id] - health_bar_width / 2)
-        self.health_bar = HealthBar(id=self.id, health=100, pos=(health_bar_x, 10), width=health_bar_width)
+        self.health_bar = HealthBar(id=self.id, health=100, pos=(health_bar_x, 10), width=health_bar_width, show=show)
         self.speed = 10
         self.skin_index = 0
         self.animation_list = []
@@ -146,15 +146,25 @@ class Fighter(epg.Sprite):
             self.skins_dir = self.direction
         self.image = self.orig_image = self.animation_list[skin_index]
         self.skin_index = skin_index
+        
+    def hide(self,):
+        super().hide()
+        self.health_bar.hide()
+        print('HIDE')
+    
+    def show(self,):
+        super().hide()
+        self.health_bar.show()
+        print('SHOW')
 
 
 @log_class
 class HealthBar(epg.Label):
     HEIGHT = 40
-    def __init__(self, id, pos, width, health=100):
+    def __init__(self, id, pos, width, health=100, show=True):
         self.width = width
         x, y = pos
-        super().__init__(text=id, x=x, y=y, val=health)
+        super().__init__(text=id, x=x, y=y, val=health, show=show)
         
     
     def _get_surf(self, ):

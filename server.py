@@ -217,16 +217,62 @@ class Rect:
 
 class Ring(threading.Thread):
     def __init__(self, players_num, playing_time=10):
-        super().__init__(self)
+        super().__init__()
         self.timer = playing_time
         self.players_num = players_num
         self.players = []
     
     def add_player(self, player):
         self.players.append(player)
+        log.debug(f'It is new player on our ring! His name is {self.name}')             #TODO запустить если это первый игрок
      
     def run(self,):
-        pass
+        log.debug(f'Игрок создан с id : {current_player.id}')
+        player_connected = True
+        while player_connected:
+            current_player.set_start()
+            log.info(f'Player {current_player.id} is ready!')
+            start_state = {'current_player_id' : current_player.id}
+            global connected_players_num, alive_players_num, max_players_num, game_started, timer
+          #  while connected_players_num < 2:
+           #     print(connected_players_num, 'кол-во игроков')
+            #    time.sleep(1)
+            for id, player in players.items():
+                if player:
+                    start_state[id] = (player.dir,
+                                       player.rect.center_x, 
+                                       player.rect.center_y, 
+                                       player.rect.width,
+                                       player.rect.height,
+                                       )
+            send(start_state, current_player.socket)
+            log.debug(f'player id: {current_player.id} start state: {start_state}')
+            start_button_push = recieve(current_player.socket)                  # TODO сделать цикл try except
+            alive_players_num += 1
+            max_players_num += 1
+            game_started = True
+            log.debug(f'Player {current_player.id}: start main cycle. alive_players_num: {alive_players_num}, max_players_num: {max_players_num}')
+            while True:                                                    #главный цикл игры
+                options = recieve(current_player.socket)
+                current_player.mode = IN_GAME
+                if options == ERROR:
+                    log.error(f'Потерянно соеденение с : {current_player.id} игрок отключился')
+                    alive_players_num -= 1
+                    player_connected = False
+                    break
+                current_player.apply_options(options)
+                send(get_game_state(), current_player.socket)
+                if alive_players_num < 2 and max_players_num > 1:
+                    log.info(f'GAME OVER {current_player.id}')
+                    log.debug(f'{max_players_num} max_players_num')
+                    log.debug(f'{alive_players_num} alive_players_num')
+                    current_player.socket.recv(1024)
+                 #   players_state = 'finish'
+                    max_players_num = 0
+                    alive_players_num = 0
+                    send('finish', current_player.socket)
+                    break
+        remove_player(current_player.id)
 
 
 def waiting_players():
@@ -275,6 +321,14 @@ def get_game_state():
     else:
         game_state['timer'] = None
     return game_state
+
+@to_log
+def choice_waiting(player):
+    send('connected', player.socket)
+    ring_num = recieve(player.socket)
+    log.info(f'player {player.id} chose to {ring_name}')        #TODO обработать ошибку соединения
+    if ring_name in ring.keys():
+        rings(ring_name).add_player(player)
 
 @to_log
 def threaded_referee():
@@ -343,8 +397,16 @@ def threaded_player(current_player):
                 break
     remove_player(current_player.id)
 
+ring2 = Ring(2)
+ring3 = Ring(3)
+ring4 = Ring(4)
 threading.Thread(target=threaded_referee, daemon=True).start()
 #создать объект ринга и админа
+
+rings = {'2' : ring2,
+         '3' : ring3,
+         '4' : ring4,
+        }
 
 while True:
     player_socket, adress = start_socket.accept()
