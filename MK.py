@@ -109,6 +109,9 @@ class WebMenu():
         
     def update_buttons(self):
         print('buttons updater started')
+        while not self.server.serv_socket:
+            print('service socket is not available...')
+            time.sleep(0.5)
         while self.active:
             buttons_state = self.server.recv(self.server.serv_socket)
             print(f'RECIEVED MENU BUTTONS STATE: {buttons_state}')
@@ -185,6 +188,7 @@ def start_game():
     print(f'start game state:{start_game_state}')
     global current_fighter_id
     current_fighter_id = start_game_state.pop('current_player_id')
+    server.set_service_socket(current_fighter_id)
     create_fighters(start_game_state, show=False)
     menu.enable_button('играть')
 

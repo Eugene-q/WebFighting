@@ -3,15 +3,19 @@ import json
 
 class Conection :
     def __init__(self, url, port):
+        self.address = (url, port)
         self.main_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.main_socket.connect((url, port))
+        self.main_socket.connect(self.address)
         self.send('main')
-        self.serv_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.serv_socket.connect((url, port))
-        self.send('service', self.serv_socket)
+        self.serv_socket = None
 
     def get_start(self):
         return self.recv()
+    
+    def set_service_socket(self, fighter_id):
+        self.serv_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.serv_socket.connect(self.address)
+        self.send(fighter_id, self.serv_socket)
     
     def get_game_state(self, options):
         self.send(options)

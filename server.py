@@ -425,22 +425,22 @@ while True:
     log.info(f'Подключение с адреса : {adress}')
     socket_status = recieve(player_socket)
     log.debug(f'socket status: {socket_status}')
-    for id, player_in_slot in players.items():
-        if player_in_slot:
-            if socket_status == 'service':
-                player_in_slot.set_serv_socket(player_socket)
-                log.debug(f'service socket setted to player {player_in_slot.id}')
-                break
-        else:
-            if socket_status == 'main':
-                player = Player(id, player_socket, GRAVITY)
-                players[id] = player
-                #threading.Thread(target=choice_waiting, args=(player,), daemon=True).start()
-                connected_players_num += 1
-                threading.Thread(target=threaded_player, args=(player,), daemon=True).start()
-                log.debug('new player thread created')
-                break
+    if type(socket_status) == int and socket_status >= 0:
+        player = players.get(socket_status)
+        player.set_serv_socket(player_socket)
+        log.debug(f'service socket setted to player {player.id}')
     else:
-        print('Сокет закрыт. Ошибка или максимальное количество игроков')
-        player_socket.close()
+        for id, player_in_slot in players.items():
+            if not player_in_slot:
+                if socket_status == 'main':
+                    player = Player(id, player_socket, GRAVITY)
+                    players[id] = player
+                    #threading.Thread(target=choice_waiting, args=(player,), daemon=True).start()
+                    connected_players_num += 1
+                    threading.Thread(target=threaded_player, args=(player,), daemon=True).start()
+                    log.debug('new player thread created')
+                    break
+        else:
+            print('Сокет закрыт. Ошибка или максимальное количество игроков')
+            player_socket.close()
         
