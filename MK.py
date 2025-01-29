@@ -54,6 +54,7 @@ class WebMenu():
                  button_order='v', 
                  button_margin=100,
                 ):
+        self.active = False
         self.server = server
         self.background_path = menu_background_img_path
         self.screen = screen
@@ -78,6 +79,7 @@ class WebMenu():
                 button_x += button_size[0] + button_margin
                 
     def get_choice (self, labels=[]):
+        self.active = True
         choice = ''
         self.screen.set_background(self.background_path)
         if labels:
@@ -89,16 +91,15 @@ class WebMenu():
                 label_y += label_height
         for button in self.buttons:
             button.show()
-        menu = True
-        buttons_updater = threading.Thread(target=self.update_buttons, args=(self, ), daemon=True).start()
-        while menu:
+        buttons_updater = threading.Thread(target=self.update_buttons, daemon=True).start()
+        while self.active:
             update()
             for button in self.buttons:
                 if button.get_pressed():
                     choice = button.text
                     update()
                     time.sleep(0.5)
-                    menu = False
+                    self.active = False
                     button.set_skin(button.RELEASED)
         for button in self.buttons:
             button.hide()
@@ -107,7 +108,11 @@ class WebMenu():
         return choice
         
     def update_buttons(self):
-        self.server.recieve()
+        print('buttons updater started')
+        while self.active:
+            buttons_state = self.server.recv(self.server.serv_socket)
+            print(f'RECIEVED MENU BUTTONS STATE: {buttons_state}')
+        print('buttons updater stopped')
         
     def enable_button(self, button_name, enable=True):
         for button in self.buttons:
@@ -284,7 +289,7 @@ menu = WebMenu(server,
 while True:
     menu.enable_button('играть', False)
 
-    #threading.Thread(target=start_game).start()
+    threading.Thread(target=start_game).start()
     
     print(f'start menu')
     choice = menu.get_choice()
