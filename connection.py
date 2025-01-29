@@ -3,9 +3,9 @@ import json
 
 
 class Conection :
-    def __init__(self, server, port):
+    def __init__(self, url, port):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.connect((server, port))
+        self.server.connect((url, port))
 
     def get_start(self):
         return self.recv()

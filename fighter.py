@@ -1,8 +1,9 @@
 import easy_pygame as epg
 from easy_pygame import UP, DOWN, LEFT, RIGHT, BORDER
 import pygame
+import sys
 import inspect
-import logging as mainlog
+import logging
 
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 800
@@ -26,17 +27,39 @@ ATTACK = 3
 HITTED = 4
 DEAD = 5
 
-LOGGING_LEVEL = mainlog.DEBUG
+LOGGING_LEVEL = logging.INFO
 NOT_LOGGING_FUNCTION = ('sub_func',)
 
-mainlog.basicConfig(level=LOGGING_LEVEL,
-                format='%(levelname)s %(message)s')
-log = mainlog.getLogger('log_to_file')
-fhandler = mainlog.FileHandler(filename='log_client.txt', mode='a')
-formatter = mainlog.Formatter('%(asctime)s, %(levelname)s, %(message)s, %(funcName)s, %(lineno)s, %(filename)s')
+debug_handler = logging.StreamHandler(stream=sys.stdout)
+debug_formatter = logging.Formatter("{levelname}\t{message} [{name}/{funcName}/{lineno}]", style='{')
+debug_handler.setLevel(logging.DEBUG)
+debug_handler.setFormatter(debug_formatter)
+DEBUG_HANDLER = debug_handler
 
-fhandler.setFormatter(formatter)
-log.addHandler(fhandler)
+logging.basicConfig(level=LOGGING_LEVEL, filename='log_client.txt', filemode='w',
+                format='%(asctime)s, %(levelname)s, %(name)s.%(message)s, %(lineno)s')
+log = logging.getLogger('main_log')
+log.addHandler(DEBUG_HANDLER)
+
+def set_logger(class_name):
+    logger = logging.getLogger(class_name)
+    logger.setLevel(LOGGING_LEVEL)
+    logger.addHandler(DEBUG_HANDLER)
+    return logger
+
+def to_log_method(func):
+    def sub_func(self, *args, **kwargs):
+        result = func(self, *args, **kwargs)
+        args = args or ''
+        kwargs = kwargs or ''
+        arguments = f'{args}{kwargs}'
+        if not func.__name__ in NOT_LOGGING_FUNCTION:
+            if self.log.level == logging.DEBUG:
+                self.log.debug(f'{func.__name__}({arguments})')
+            else:
+                self.log.info(f"{func.__name__}()")
+        return result
+    return sub_func
 
 def to_log(func):
     def sub_func(*args, **kwargs):
@@ -50,12 +73,13 @@ def log_class(class_to_log):
     class_name = class_to_log.__name__
     for name, method in inspect.getmembers(class_to_log):
         if inspect.isfunction(method):
-            setattr(class_to_log, name, to_log(method))
+            setattr(class_to_log, name, to_log_method(method))
     return class_to_log
 
 
 @log_class
 class Fighter(epg.Sprite):
+    log = set_logger('Fighter')
     def __init__(self, animation_pathes, x_pos, y_pos, flip, wigth, height, ground_level, gravity, id, img=epg.GREEN, show=True):
         pos = (x_pos, y_pos)
         super().__init__(img=animation_pathes[0], pos=pos, w=wigth, h=height, savescale=False, show=show)
@@ -153,13 +177,14 @@ class Fighter(epg.Sprite):
         print('HIDE')
     
     def show(self,):
-        super().hide()
+        super().show()
         self.health_bar.show()
         print('SHOW')
 
 
 @log_class
 class HealthBar(epg.Label):
+    log = set_logger('HealthBar')
     HEIGHT = 40
     def __init__(self, id, pos, width, health=100, show=True):
         self.width = width

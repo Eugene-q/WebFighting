@@ -28,25 +28,25 @@ GRAVITY = 2
 #EARTH = 716
 
 PROJECT_DIR = os.getcwd()
-FIGHTER_IMAGE_PATHES = (os.path.join(PROJECT_DIR, 'photos\\stay.png'),
-                        os.path.join(PROJECT_DIR, 'photos\\go.png'),
-                        os.path.join(PROJECT_DIR, 'photos\\jump.png'),
-                        os.path.join(PROJECT_DIR, 'photos\\attack.png'),
-                        os.path.join(PROJECT_DIR, 'photos\\hitted.png'),
-                        os.path.join(PROJECT_DIR, 'photos\\dead.png'),
+FIGHTER_IMAGE_PATHES = (os.path.join(PROJECT_DIR, 'photos', 'stay.png'),
+                        os.path.join(PROJECT_DIR, 'photos', 'go.png'),
+                        os.path.join(PROJECT_DIR, 'photos', 'jump.png'),
+                        os.path.join(PROJECT_DIR, 'photos', 'attack.png'),
+                        os.path.join(PROJECT_DIR, 'photos', 'hitted.png'),
+                        os.path.join(PROJECT_DIR, 'photos', 'dead.png'),
                         )
 
 BUTTON_RELEASED_IMAGE_PATH = 'photos/released.jpeg'
 BUTTON_PRESSED_IMAGE_PATH = 'photos/pressed.jpeg'
 BUTTON_DISABLED_IMAGE_PATH = 'photos/disabled.jpeg'
 
-SERVER = 'localhost'
+URL = 'localhost'
 PORT = 5555
 
 
-@log_class
-class Menu():
-    def __init__(self, screen,
+class WebMenu():
+    def __init__(self, server, 
+                 screen,
                  menu_background_img_path, 
                  button_titles, 
                  button_img_paths, 
@@ -54,6 +54,7 @@ class Menu():
                  button_order='v', 
                  button_margin=100,
                 ):
+        self.server = server
         self.background_path = menu_background_img_path
         self.screen = screen
         if button_order == 'v':
@@ -89,6 +90,7 @@ class Menu():
         for button in self.buttons:
             button.show()
         menu = True
+        buttons_updater = threading.Thread(target=self.update_buttons, args=(self, ), daemon=True).start()
         while menu:
             update()
             for button in self.buttons:
@@ -104,13 +106,15 @@ class Menu():
             label.hide()
         return choice
         
+    def update_buttons(self):
+        self.server.recieve()
+        
     def enable_button(self, button_name, enable=True):
         for button in self.buttons:
             if button.text == button_name:
                 button.enable(enable)
 
 
-@log_class
 class Button(epg.Sprite, epg.Label):
     RELEASED = 0
     PRESSED = 1
@@ -162,7 +166,7 @@ def update():
 
 screen = epg.Screen(EARTH_IMAGE_PATH, width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
 
-server = connection.Conection(SERVER, PORT)
+server = connection.Conection(URL, PORT)
 
 fighters = []
 
@@ -188,7 +192,6 @@ def get_str_time(int_time):
 @to_log
 def create_fighters(game_state, show=True):
     global fighters
-#    fighters = []
     for id, player_pos in game_state.items():
         print(f'fighter {id} created')
         dir, x_pos, y_pos, wigth, height = player_pos
@@ -204,6 +207,7 @@ def create_fighters(game_state, show=True):
                         show=show,
                         ))
  #   return fighters
+
 @to_log
 def fight():
     print('файтеры', len(fighters))
@@ -213,7 +217,6 @@ def fight():
             if fighter.id == current_fighter_id:
                 options = fighter.check_options()
                 game_state = server.get_game_state(options)
-            fighter.show()
         if game_state == 'finish':
             for fighter in fighters:
                 fighter.hide()
@@ -268,7 +271,8 @@ label_timer = epg.Label(text='',
                         show=False,
                         )
     
-menu = Menu(screen,
+menu = WebMenu(server,
+            screen,
             BACK_IMAGE_PATH, 
             ('играть', 'выйти', 'Ринг на 2', 'Ринг на 3', 'Ринг на 4'),
             (BUTTON_RELEASED_IMAGE_PATH, BUTTON_PRESSED_IMAGE_PATH, BUTTON_DISABLED_IMAGE_PATH),
@@ -280,15 +284,16 @@ menu = Menu(screen,
 while True:
     menu.enable_button('играть', False)
 
-    threading.Thread(target=start_game).start()
+    #threading.Thread(target=start_game).start()
     
     print(f'start menu')
     choice = menu.get_choice()
 
     if choice == 'выйти':
         break
-
-    if choice == 'играть':
+    elif choice == 'Ринг на 2':
+        server.send('2')
+    elif choice == 'играть':
         server.send('Игра началась!')
         screen.set_background(EARTH_IMAGE_PATH)
         label_timer.show()

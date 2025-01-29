@@ -19,7 +19,7 @@ START_POSITIONS = (int(SCREEN_WIDTH / 5),
 SERVER = 'localhost'
 PORT = 5555
 
-FIGHT_TIME = 600
+FIGHT_TIME = 60
 timer = FIGHT_TIME
 recent_time = 0
 
@@ -324,20 +324,24 @@ def get_game_state():
 
 @to_log
 def choice_waiting(player):
-    send('connected', player.socket)
+    send(tuple(rings.keys()), player.socket)
+    #TODO запустить поток, отправляющий изменения состояния рингов
     ring_num = recieve(player.socket)
-    log.info(f'player {player.id} chose to {ring_name}')        #TODO обработать ошибку соединения
-    if ring_name in ring.keys():
-        rings(ring_name).add_player(player)
+    if ring_num == ERROR:
+        log.error(f'Потерянно соеденение с : {player.id} ')
+        remove_player(current_player.id)
+        return
+    log.info(f'player {player.id} chose to {ring_name}')       
+    rings(ring_name).add_player(player)
 
 @to_log
 def threaded_referee():
     global game_started, alive_players_num, max_players_num, timer
-    while True:
+    while threading.active_count() > 1:
         if game_started:
             log.info('Referee: game started!')
             timer = FIGHT_TIME
-            while not players_is_ready() and timer > 0:
+            while not waiting_players() and timer > 0:
                 time.sleep(1)
                 timer -= 1
             game_started = False
@@ -347,6 +351,7 @@ def threaded_referee():
             print()
         else:
             time.sleep(0.25)
+    log.info('referee: thread stopped')
 
 @to_log
 def threaded_player(current_player):
@@ -395,7 +400,9 @@ def threaded_player(current_player):
                 alive_players_num = 0
                 send('finish', current_player.socket)
                 break
+    pl_id = current_player.id            
     remove_player(current_player.id)
+    log.info(f'player {pl_id}: thread stoped')
 
 ring2 = Ring(2)
 ring3 = Ring(3)
@@ -403,9 +410,9 @@ ring4 = Ring(4)
 threading.Thread(target=threaded_referee, daemon=True).start()
 #создать объект ринга и админа
 
-rings = {'2' : ring2,
-         '3' : ring3,
-         '4' : ring4,
+rings = {'Ринг на 2' : ring2,
+         'Ринг на 3' : ring3,
+         'Ринг на 4' : ring4,
         }
 
 while True:
@@ -415,8 +422,9 @@ while True:
         if not player_in_slot:
             player = Player(id, player_socket, GRAVITY)
             players[id] = player
-            connected_players_num += 1
-            threading.Thread(target=threaded_player, args=(player,), daemon=True).start()
+            threading.Thread(target=choice_waiting, args=(player,), daemon=True).start()
+            #connected_players_num += 1
+            #threading.Thread(target=threaded_player, args=(player,), daemon=True).start()
             break
     else:
         print('Максимальное количество игроков')
