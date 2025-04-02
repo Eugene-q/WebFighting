@@ -77,7 +77,7 @@ def log_class(class_to_log):
     return class_to_log
 
 
-@log_class
+#@log_class
 class Fighter(epg.Sprite):
     log = set_logger('Fighter')
     def __init__(self, animation_pathes, x_pos, y_pos, flip, wigth, height, ground_level, gravity, id, img=epg.GREEN, show=True):
@@ -182,7 +182,7 @@ class Fighter(epg.Sprite):
         print('SHOW')
 
 
-@log_class
+#@log_class
 class HealthBar(epg.Label):
     log = set_logger('HealthBar')
     HEIGHT = 40

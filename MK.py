@@ -58,25 +58,32 @@ class WebMenu():
         self.server = server
         self.background_path = menu_background_img_path
         self.screen = screen
+        self.button_order = button_order
+        self.button_size = button_size
+        self.button_margin = button_margin
+        self.button_img_paths = button_img_paths
         if button_order == 'v':
-            button_x = int(SCREEN_WIDTH / 2)
-            button_y = button_margin + int(button_size[1] / 2)
+            self.last_button_x = int(SCREEN_WIDTH / 2)
+            self.last_button_y = button_margin + int(button_size[1] / 2)
         else:
-            button_x = button_margin + int(button_size[0] / 2)
-            button_y = int(SCREEN_HEIGHT / 2)
+            self.last_button_x = button_margin + int(button_size[0] / 2)
+            self.last_button_y = int(SCREEN_HEIGHT / 2)
         self.buttons = []
+        self.add_buttons(button_titles)
+                
+    def add_buttons(self, button_titles):
         for title in button_titles:
-            button_pos = (button_x, button_y)
-            self.buttons.append(Button(button_img_paths, 
+            button_pos = (self.last_button_x, self.last_button_y)
+            self.buttons.append(Button(self.button_img_paths, 
                                        title,
                                        button_pos,
-                                       w=button_size[0],
-                                       h=button_size[1],
+                                       w=self.button_size[0],
+                                       h=self.button_size[1],
                                        ))
-            if button_order == 'v':
-                button_y += button_size[1] + button_margin
+            if self.button_order == 'v':
+                self.last_button_y += self.button_size[1] + self.button_margin
             else:
-                button_x += button_size[0] + button_margin
+                self.last_button_x += self.button_size[0] + self.button_margin
                 
     def get_choice (self, labels=[]):
         self.active = True
@@ -108,14 +115,16 @@ class WebMenu():
         return choice
         
     def update_buttons(self):
-        print('buttons updater started')
-        while not self.server.serv_socket:
-            print('service socket is not available...')
+        print('WebMenu: buttons updater started')
+        while not self.server.serv_socket_available:
+            print('WebMenu: Ожидаю доступность сервисного сокета...')
             time.sleep(0.5)
         while self.active:
+            print('WebMenu: Ожидаю обновления статуса кнопок...')
             buttons_state = self.server.recv(self.server.serv_socket)
-            print(f'RECIEVED MENU BUTTONS STATE: {buttons_state}')
-        print('buttons updater stopped')
+            print(f'WebMenu: RECIEVED MENU BUTTONS STATE: {buttons_state}')
+            
+        print('WebMenu: buttons updater stopped')
         
     def enable_button(self, button_name, enable=True):
         for button in self.buttons:
@@ -185,12 +194,17 @@ ground_level = SCREEN_HEIGHT - 254
 @to_log
 def start_game():
     start_game_state = server.get_start()
-    print(f'start game state:{start_game_state}')
+    print(f'start_game: start game state:{start_game_state}')
     global current_fighter_id
     current_fighter_id = start_game_state.pop('current_player_id')
-    server.set_service_socket(current_fighter_id)
+    ring_nums = start_game_state.pop('rings')
+    ring_names = tuple(f'Ринг на {num}' for num in ring_nums)
+    menu.add_buttons(ring_names)
+    print(f'start_game: В меню добавлены кнопки рингов: {ring_names}')
+    while not server.set_service_socket(current_fighter_id):
+        log.error('start_game: Попытка повторного создания сервисного сокета через 1 с...')
+        time.sleep(1)
     create_fighters(start_game_state, show=False)
-    menu.enable_button('играть')
 
 def get_str_time(int_time):
     seconds = int_time % 60
@@ -203,13 +217,13 @@ def create_fighters(game_state, show=True):
     global fighters
     for id, player_pos in game_state.items():
         print(f'fighter {id} created')
-        dir, x_pos, y_pos, wigth, height = player_pos
+        direction, x_pos, y_pos = player_pos
         fighters.append(Fighter(animation_pathes=FIGHTER_IMAGE_PATHES,
                         x_pos=x_pos,
                         y_pos=y_pos,
-                        flip=dir,
-                        wigth=wigth, 
-                        height=height,
+                        flip=direction,
+                        wigth=SPRITE_WIDTH, 
+                        height=SPRITE_HEIGHT,
                         ground_level=ground_level,
                         gravity=GRAVITY,
                         id=int(id),
@@ -219,16 +233,22 @@ def create_fighters(game_state, show=True):
 
 @to_log
 def fight():
-    print('файтеры', len(fighters))
+    print('Старт игры! Количество игроков', len(fighters))
     while True:
+        print()
         game_state = {}
         for fighter in fighters:
             if fighter.id == current_fighter_id:
                 options = fighter.check_options()
                 game_state = server.get_game_state(options)
+                log.info(f'Новый кадр: {game_state}')
         if game_state == 'finish':
+            print('получена команда окончания игры!')
+            print(f'скрываю следующих файтеров: {fighters}')
             for fighter in fighters:
                 fighter.hide()
+            print('подтверждаю окончание игры...')
+            server.send('OK')
             print('Раунд окончен.')
             return None
         for fighter in fighters:
@@ -247,18 +267,17 @@ def fight():
             print('new fighters on server')
             new_fighters = {}
             for fighter_id in game_state.keys():
-                for fighter in fighters:
-                    print('fighter_id:', fighter_id, 'fighter.id:', fighter.id)
-                    if fighter_id != str(fighter.id):
-                        new_fighter_state = game_state.get(fighter_id)
-                        new_fighter_state = (new_fighter_state[4],
-                                             new_fighter_state[0],
-                                             new_fighter_state[1],
-                                             SPRITE_WIDTH,
-                                             SPRITE_HEIGHT,
-                                            )
-                        print('new_fighter_state:', new_fighter_state)
-                        new_fighters[fighter_id] = new_fighter_state
+                print('id существующих игроков:')
+                for f in fighters:
+                    print(f'{f.id} type:{type(f.id)}')
+                if not fighter_id in tuple(str(fighter.id) for fighter in fighters):
+                    new_fighter_state = game_state.get(fighter_id)
+                    new_fighter_state = (new_fighter_state[4],
+                                         new_fighter_state[0],
+                                         new_fighter_state[1],
+                                        )
+                    print('new_fighter_state:', new_fighter_state)
+                    new_fighters[fighter_id] = new_fighter_state
             create_fighters(new_fighters)
         update()
     print('end')
@@ -283,7 +302,7 @@ label_timer = epg.Label(text='',
 menu = WebMenu(server,
             screen,
             BACK_IMAGE_PATH, 
-            ('играть', 'выйти', 'Ринг на 2', 'Ринг на 3', 'Ринг на 4'),
+            ('выйти', ),
             (BUTTON_RELEASED_IMAGE_PATH, BUTTON_PRESSED_IMAGE_PATH, BUTTON_DISABLED_IMAGE_PATH),
             (100, 100),
             button_order='h',
@@ -291,8 +310,6 @@ menu = WebMenu(server,
             )
 
 while True:
-    menu.enable_button('играть', False)
-
     threading.Thread(target=start_game).start()
     
     print(f'start menu')
@@ -300,10 +317,10 @@ while True:
 
     if choice == 'выйти':
         break
-    elif choice == 'Ринг на 2':
-        server.send('2')
-    elif choice == 'играть':
-        server.send('Игра началась!')
+    else:
+        choice = int(choice[-1])
+        server.send(choice)
+        #server.send('Игра началась!')
         screen.set_background(EARTH_IMAGE_PATH)
         label_timer.show()
         fight()

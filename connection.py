@@ -8,6 +8,7 @@ class Conection :
         self.main_socket.connect(self.address)
         self.send('main')
         self.serv_socket = None
+        self.serv_socket_available = False
 
     def get_start(self):
         return self.recv()
@@ -16,6 +17,17 @@ class Conection :
         self.serv_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.serv_socket.connect(self.address)
         self.send(fighter_id, self.serv_socket)
+        print(f'Отправлен запрос на создание сервисного сокета для id {fighter_id}...')
+        confirm = self.recv(self.serv_socket)
+        if confirm == 'OK':
+            print(f'сервисный сокет для id {fighter_id} подтверждён.')
+            self.serv_socket_available = True
+            return True
+        else:
+            print(f'Ошибка подтверждения сервисного сокета для id {fighter_id}!')
+            print(f'Ответ: {confirm}')
+            print('Сокет будет закрыт.')
+            self.serv_socket.close()
     
     def get_game_state(self, options):
         self.send(options)
