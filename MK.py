@@ -123,6 +123,8 @@ class WebMenu():
             print('WebMenu: Ожидаю обновления статуса кнопок...')
             buttons_state = self.server.recv(self.server.serv_socket)
             print(f'WebMenu: RECIEVED MENU BUTTONS STATE: {buttons_state}')
+            for button, state in zip(self.buttons, buttons_state):
+                button.enable(state)
             
         print('WebMenu: buttons updater stopped')
         

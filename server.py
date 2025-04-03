@@ -198,6 +198,17 @@ class Player(threading.Thread):
     def say(self, mes):
         log.info(f'Player {self.id}: {mes}')
     
+    def watch_rings(self,):
+        prev_rings_state = []
+        while self.mode != IN_GAME:
+            rings_state = [not ring.game_started for ring in rings.values()]
+            if rings_state != prev_rings_state:
+                prev_rings_state = rings_state
+                self.say(f'состояние рингов поменялось! {rings_state} Отправляю клиенту новое состояние.')
+                send(rings_state, self.serv_socket)
+            time.sleep(0.1)
+        self.say('Наблюдение за рингами остановлено.')
+    
     def run(self):
         self.say('Игрок создан!')
         client_connected = True
@@ -219,6 +230,8 @@ class Player(threading.Thread):
             send(initial_data, self.socket)
             self.say(f'start state: {initial_data}')
             self.wait_for_serv_socket()
+            self.say('Запускаю поток наблюдения за доступностью рингов...')
+            threading.Thread(target=self.watch_rings).start()
             self.say('Ожидаю выбор ринга...')
             ring_name = recieve(self.socket)
             if ring_name == ERROR:
@@ -229,9 +242,9 @@ class Player(threading.Thread):
             self.say(f'Захожу на ринг')
             ring = rings.get(ring_name)
             ring.add_player(self)
+            self.mode = IN_GAME
             while True:                                                    #главный цикл игры
                 options = recieve(self.socket)
-                self.mode = IN_GAME
                 if options == ERROR:
                     log.error(f'Потерянно соеденение с : {self.name} игрок отключился')
                     client_connected = False
