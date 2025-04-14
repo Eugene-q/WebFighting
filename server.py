@@ -21,8 +21,6 @@ SERVER = 'localhost'
 PORT = 5555
 
 FIGHT_TIME = 60
-timer = FIGHT_TIME
-recent_time = 0
 
 STAY = 0
 GO = 1
@@ -86,10 +84,12 @@ def log_class(class_to_log, ):
 
 @log_class
 class Player(threading.Thread):
+    SERV_SOCKET_TIMEOUT = 10
     def __init__(self, id, socket, gravity):
         super().__init__(daemon=True)
+        self.immortal = True
         self.attack_delay = 0
-        self.hitted_delay = 0
+        self.hitted_delay = HITTED_DELAY
         self.action = STAY     # 0 = stay, 1 = go, 2 = jump, 3 = attack, 4 hitted, 5 = dead
         self.id = id
         self.name = f'Игрок {self.id}'
@@ -109,9 +109,11 @@ class Player(threading.Thread):
         
     def wait_for_serv_socket(self):
         self.say('Ожидаю назначения сервисного сокета...')
-        while not self.serv_socket:
+        timer = 0
+        while (not self.serv_socket) and (timer < self.SERV_SOCKET_TIMEOUT):
             time.sleep(0.25)
-        self.say('Сервисный сокет получен')
+            timer += 0.25
+        return self.serv_socket
 
     def set_serv_socket(self, socket):
         self.serv_socket = socket
@@ -139,8 +141,7 @@ class Player(threading.Thread):
             hitted_enemy.hitted()
     
     def hitted(self):
-        self.hitted_delay = HITTED_DELAY
-        if self.mode == IN_GAME:
+        if self.mode == IN_GAME and not self.immortal:
             if self.health > 0:
                 self.health -= 5
                 self.action = HITTED
@@ -229,7 +230,11 @@ class Player(threading.Thread):
 #                                        )
             send(initial_data, self.socket)
             self.say(f'start state: {initial_data}')
-            self.wait_for_serv_socket()
+            if not self.wait_for_serv_socket():
+                self.say('Слишком долгое ожидание сервисного сокета! Отключаюсь...')
+                client_connected = False
+                continue
+            self.say('Сервисный сокет получен')
             self.say('Запускаю поток наблюдения за доступностью рингов...')
             threading.Thread(target=self.watch_rings).start()
             self.say('Ожидаю выбор ринга...')
@@ -243,12 +248,12 @@ class Player(threading.Thread):
             ring = rings.get(ring_name)
             ring.add_player(self)
             self.mode = IN_GAME
-            while True:                                                    #главный цикл игры
+            while client_connected:                                                    #главный цикл игры
                 options = recieve(self.socket)
                 if options == ERROR:
                     log.error(f'Потерянно соеденение с : {self.name} игрок отключился')
                     client_connected = False
-                    break
+                    continue
                 self.apply_options(options)
                 send(ring.get_game_state(), self.socket)
                 if not ring.players_on_ring:
@@ -324,9 +329,19 @@ class Ring(threading.Thread):
                          
     
     def waiting_for_players(self):
-        self.say('ожидает остальных игроков...')
-        while len(self.players) < self.players_num:
+        self.say(f'Жду, когда придёт {self.players_num} игроков...')
+        len_players = prev_len_players = len(self.players)
+        while len_players > 0 and len_players < self.players_num:
             time.sleep(1)
+            len_players = len(self.players)
+            if prev_len_players != len_players:
+                self.say(f'теперь уже {len_players} игроков!')
+                prev_len_players = len_players
+    
+    def set_immortal(self, immortal=True):
+        for player in self.players.values():
+            self.say(f'бессмертие для {player.name} - {immortal}')
+            player.immortal = immortal
     
     def get_game_state(self):
         game_state = {}
@@ -334,8 +349,8 @@ class Ring(threading.Thread):
         for id, player in self.players.items():
             game_state[id] = player.get_self_state()
         if self.timer != recent_time:
-            game_state['timer'] = timer
-            recent_time = timer
+            game_state['timer'] = self.timer
+            recent_time = self.timer
         else:
             game_state['timer'] = None
         return game_state
@@ -355,20 +370,25 @@ class Ring(threading.Thread):
         while threading.active_count() > 1: #???
             if self.players:
                 self.waiting_for_players()
+                if not self.players:
+                    self.say('Все игроки ушли, не дождавшись матча! Перезапускаюсь...')
+                    continue
                 self.last_winner = None
                 log.info(f'Referee: game started!')
+                self.set_immortal(False)
                 self.game_started = True
-                timer = FIGHT_TIME
-                while timer > 0:
+                self.timer = FIGHT_TIME
+                while self.timer > 0:
                     winner = self.get_winner()
                     if winner:
                         log.info(f'{winner.name} выиграл!')
                         self.last_winner = winner
                         break
                     time.sleep(1)
-                    timer -= 1
+                    self.timer -= 1
                 self.game_started = False
                 log.info(f'Referee: game over!')
+                self.set_immortal()
                 self.players.clear()
                 self.players_on_ring = False
                 print()

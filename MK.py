@@ -48,9 +48,9 @@ class WebMenu():
     def __init__(self, server, 
                  screen,
                  menu_background_img_path, 
-                 button_titles, 
                  button_img_paths, 
                  button_size, 
+                 button_titles=(),
                  button_order='v', 
                  button_margin=100,
                 ):
@@ -62,28 +62,47 @@ class WebMenu():
         self.button_size = button_size
         self.button_margin = button_margin
         self.button_img_paths = button_img_paths
-        if button_order == 'v':
-            self.last_button_x = int(SCREEN_WIDTH / 2)
-            self.last_button_y = button_margin + int(button_size[1] / 2)
-        else:
-            self.last_button_x = button_margin + int(button_size[0] / 2)
-            self.last_button_y = int(SCREEN_HEIGHT / 2)
+        self.reset_last_button_pos()
         self.buttons = []
         self.add_buttons(button_titles)
+        
+    def reset_last_button_pos(self,):
+        if self.button_order == 'v':
+            self.last_button_x = int(SCREEN_WIDTH / 2)
+            self.last_button_y = self.button_margin + int(self.button_size[1] / 2)
+        else:
+            self.last_button_x = self.button_margin + int(self.button_size[0] / 2)
+            self.last_button_y = int(SCREEN_HEIGHT / 2)
                 
-    def add_buttons(self, button_titles):
+    def add_buttons(self, button_titles, insert_before_existing=False):
         for title in button_titles:
             button_pos = (self.last_button_x, self.last_button_y)
-            self.buttons.append(Button(self.button_img_paths, 
+            button = Button(self.button_img_paths, 
                                        title,
                                        button_pos,
                                        w=self.button_size[0],
                                        h=self.button_size[1],
-                                       ))
-            if self.button_order == 'v':
-                self.last_button_y += self.button_size[1] + self.button_margin
+                                       )
+            if insert_before_existing:
+                print('WebMenu: добавляю кнопку перед существующими')
+                self.reset_last_button_pos()
+                button.move_to((self.last_button_x, self.last_button_y))
+                for exist_button in self.buttons:
+                    if self.button_order == 'v':
+                        print(f'Двигаю кнопку {exist_button.text} из позиции {exist_button.pos} вертикально')
+                        new_pos = (exist_button.pos[0], exist_button.pos[1] + self.button_size[1] + self.button_margin)
+                    else:
+                        print(f'Двигаю кнопку {exist_button.text} из позиции {exist_button.pos} горизонтально')
+                        new_pos = (exist_button.pos[0] + self.button_size[0] + self.button_margin, exist_button.pos[1])
+                    exist_button.move_to(new_pos)
+                self.buttons.insert(0, button)
             else:
-                self.last_button_x += self.button_size[0] + self.button_margin
+                print('WebMenu: добавляю кнопку после существующих')
+                self.buttons.append(button)
+                if self.button_order == 'v':
+                    self.last_button_y += self.button_size[1] + self.button_margin
+                else:
+                    self.last_button_x += self.button_size[0] + self.button_margin
                 
     def get_choice (self, labels=[]):
         self.active = True
@@ -123,7 +142,7 @@ class WebMenu():
             print('WebMenu: Ожидаю обновления статуса кнопок...')
             buttons_state = self.server.recv(self.server.serv_socket)
             print(f'WebMenu: RECIEVED MENU BUTTONS STATE: {buttons_state}')
-            for button, state in zip(self.buttons, buttons_state):
+            for button, state in zip(self.buttons[1:], buttons_state):
                 button.enable(state)
             
         print('WebMenu: buttons updater stopped')
@@ -174,6 +193,10 @@ class Button(epg.Sprite, epg.Label):
             self.set_skin(self.RELEASED)
         else:
             self.set_skin(self.DISABLED)
+            
+    def move_to(self, position):
+        super().move_to(position)
+        super().place_to(position, center=True)
 
 
 def update():
@@ -200,8 +223,9 @@ def start_game():
     global current_fighter_id
     current_fighter_id = start_game_state.pop('current_player_id')
     ring_nums = start_game_state.pop('rings')
-    ring_names = tuple(f'Ринг на {num}' for num in ring_nums)
-    menu.add_buttons(ring_names)
+    ring_names = [f'Ринг на {num}' for num in ring_nums]
+    ring_names.reverse()
+    menu.add_buttons(ring_names, insert_before_existing=True)
     print(f'start_game: В меню добавлены кнопки рингов: {ring_names}')
     while not server.set_service_socket(current_fighter_id):
         log.error('start_game: Попытка повторного создания сервисного сокета через 1 с...')
@@ -303,10 +327,10 @@ label_timer = epg.Label(text='',
     
 menu = WebMenu(server,
             screen,
-            BACK_IMAGE_PATH, 
-            ('выйти', ),
+            BACK_IMAGE_PATH,
             (BUTTON_RELEASED_IMAGE_PATH, BUTTON_PRESSED_IMAGE_PATH, BUTTON_DISABLED_IMAGE_PATH),
             (100, 100),
+            button_titles=('выйти', ),
             button_order='h',
             button_margin=80,
             )
