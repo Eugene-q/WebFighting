@@ -113,7 +113,7 @@ class Player(threading.Thread):
         while (not self.serv_socket) and (timer < self.SERV_SOCKET_TIMEOUT):
             time.sleep(0.25)
             timer += 0.25
-        return self.serv_socket
+        return bool(self.serv_socket)
 
     def set_serv_socket(self, socket):
         self.serv_socket = socket
@@ -212,29 +212,25 @@ class Player(threading.Thread):
     
     def run(self):
         self.say('Игрок создан!')
-        client_connected = True
-        while client_connected:
-            self.set_start()
-            self.say('Формирую стартовое сообщение...')
-            initial_data = {'current_player_id': self.id,
-                            'rings': tuple(rings.keys()),
-                            self.id: (self.dir, self.rect.center_x, self.rect.center_y) 
-                            }
-            # for id, player in players.items():
-#                 if player:
-#                     initial_data[id] = (player.dir,
-#                                        player.rect.center_x,
-#                                        player.rect.center_y,
-#                                        player.rect.width,
-#                                        player.rect.height,
-#                                        )
-            send(initial_data, self.socket)
-            self.say(f'start state: {initial_data}')
-            if not self.wait_for_serv_socket():
-                self.say('Слишком долгое ожидание сервисного сокета! Отключаюсь...')
-                client_connected = False
-                continue
+        ###
+        self.set_start()
+        self.say('Формирую стартовое сообщение...')
+        initial_data = {'current_player_id': self.id,
+                        'rings': tuple(rings.keys()),
+                        self.id: (self.dir, self.rect.center_x, self.rect.center_y) 
+                        }
+        send(initial_data, self.socket)
+        self.say(f'start state: {initial_data}')
+        client_connected = self.wait_for_serv_socket()
+        if client_connected:
             self.say('Сервисный сокет получен')
+        else:
+            self.say('Слишком долгое ожидание сервисного сокета! Отключаюсь...')
+        ###
+        while client_connected:
+            self.say('Устанавливаю стартовое состояние')
+            self.set_start()
+            # отсюда перенесено перед циклом
             self.say('Запускаю поток наблюдения за доступностью рингов...')
             threading.Thread(target=self.watch_rings).start()
             self.say('Ожидаю выбор ринга...')
@@ -325,8 +321,7 @@ class Ring(threading.Thread):
         if player_to_delete:
             self.say(f'Игрок {player_to_delete.name} будет удалён с ринга')
             del self.players[id]
-            return True
-                         
+            return True                   
     
     def waiting_for_players(self):
         self.say(f'Жду, когда придёт {self.players_num} игроков...')
@@ -426,19 +421,6 @@ def recieve(client_socket,):
         data = ERROR
     finally:
         return data
-
-# def get_game_state():
-#     global players, timer, recent_time
-#     game_state = {}
-#     for id, player in players.items():
-#         if player:
-#             game_state[id] = player.get_self_state()
-#     if timer != recent_time:
-#         game_state['timer'] = timer
-#         recent_time = timer
-#     else:
-#         game_state['timer'] = None
-#     return game_state
 
 @to_log
 def choice_waiting(current_player):

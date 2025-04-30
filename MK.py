@@ -115,6 +115,11 @@ class WebMenu():
                 label.place_to((CENTER_X, label_y), center=True)
                 label.show()
                 label_y += label_height
+        # показать сообщение "устанавливаю подключение"
+        while not self.server.serv_socket_available:
+            print('WebMenu: Ожидаю доступность сервисного сокета...')
+            time.sleep(0.5)
+        # убрать сообщение "устанавливаю подключение"
         for button in self.buttons:
             button.show()
         buttons_updater = threading.Thread(target=self.update_buttons, daemon=True).start()
@@ -135,16 +140,12 @@ class WebMenu():
         
     def update_buttons(self):
         print('WebMenu: buttons updater started')
-        while not self.server.serv_socket_available:
-            print('WebMenu: Ожидаю доступность сервисного сокета...')
-            time.sleep(0.5)
         while self.active:
             print('WebMenu: Ожидаю обновления статуса кнопок...')
             buttons_state = self.server.recv(self.server.serv_socket)
             print(f'WebMenu: RECIEVED MENU BUTTONS STATE: {buttons_state}')
-            for button, state in zip(self.buttons[1:], buttons_state):
-                button.enable(state)
-            
+            for button, state in zip(self.buttons[:-1], buttons_state):
+                button.enable(state)    
         print('WebMenu: buttons updater stopped')
         
     def enable_button(self, button_name, enable=True):
@@ -204,17 +205,6 @@ def update():
     if epg.close_window():
         exit()
     epg.tick(FPS)
-    
-
-screen = epg.Screen(EARTH_IMAGE_PATH, width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
-
-server = connection.Conection(URL, PORT)
-
-fighters = []
-
-current_fighter_id = 0
-
-ground_level = SCREEN_HEIGHT - 254
 
 @to_log
 def start_game():
@@ -225,11 +215,14 @@ def start_game():
     ring_nums = start_game_state.pop('rings')
     ring_names = [f'Ринг на {num}' for num in ring_nums]
     ring_names.reverse()
+    # ДОБАВЛЯТЬ ТОЛЬКО НОВЫЕ КНОПКИ, ЕСЛИ ОНИ ЕСТЬ
     menu.add_buttons(ring_names, insert_before_existing=True)
     print(f'start_game: В меню добавлены кнопки рингов: {ring_names}')
+    # СОЗДАВАТЬ СЕРВИСНЫЙ СОКЕТ ТОЛЬКО ЕСЛИ ПОДКЛЮЧИЛИСЬ ТОЛЬКО ЧТО
     while not server.set_service_socket(current_fighter_id):
         log.error('start_game: Попытка повторного создания сервисного сокета через 1 с...')
         time.sleep(1)
+    # СОЗДАВАТЬ ФАЙТЕРА ТОЛЬКО ЕСЛИ ПОДКЛЮЧИЛИСЬ ТОЛЬКО ЧТО. В start_game_state ВСЕГДА ОДИН ФАЙТЕР!
     create_fighters(start_game_state, show=False)
 
 def get_str_time(int_time):
@@ -276,7 +269,7 @@ def fight():
             print('подтверждаю окончание игры...')
             server.send('OK')
             print('Раунд окончен.')
-            return None
+            return game_state
         for fighter in fighters:
             fighter_state = game_state.get(str(fighter.id))
             print('FIGHTER STATE', fighter_state)
@@ -307,6 +300,17 @@ def fight():
             create_fighters(new_fighters)
         update()
     print('end')
+
+screen = epg.Screen(EARTH_IMAGE_PATH, width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
+
+server = connection.Conection(URL, PORT)
+
+fighters = []
+
+current_fighter_id = 0
+current_fighter = None
+
+ground_level = SCREEN_HEIGHT - 254
     
 label_game_over = epg.Label(text='GAME OVER',
                         x=WIDTH_HALF,
@@ -335,6 +339,8 @@ menu = WebMenu(server,
             button_margin=80,
             )
 
+connected = False
+
 while True:
     threading.Thread(target=start_game).start()
     
@@ -349,9 +355,13 @@ while True:
         #server.send('Игра началась!')
         screen.set_background(EARTH_IMAGE_PATH)
         label_timer.show()
-        fight()
+        result = fight()
         label_timer.hide()
-        fighters = []
+        for fighter in fighters: # СЛОВАРЬ ВМЕСТО СПИСКА ФАЙТЕРОВ? ИЛИ ВЫДЕЛИТЬ current_fighter и хранить его отдельно, помещая в
+            if fighter.id == current_fighter_id:  # список только во время игры.
+                current_fighter = fighter
+                break
+        fighters = [current_fighter,]
         label_game_over.show()
         update()
         time.sleep(5)

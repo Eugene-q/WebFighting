@@ -1,20 +1,21 @@
 import socket
 import json
+import time
 
 class Conection :
     def __init__(self, url, port):
         self.address = (url, port)
         self.main_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.main_socket.connect(self.address)
-        self.send('main')
-        self.serv_socket = None
+        self.serv_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.main_socket_available = False
         self.serv_socket_available = False
 
     def get_start(self):
         return self.recv()
     
-    def set_service_socket(self, fighter_id):
-        self.serv_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def sockets_connect(self, fighter_id):
+        print('Connection: подключаю главный сокет...')
+        
         self.serv_socket.connect(self.address)
         self.send(fighter_id, self.serv_socket)
         print(f'Отправлен запрос на создание сервисного сокета для id {fighter_id}...')
@@ -28,6 +29,19 @@ class Conection :
             print(f'Ответ: {confirm}')
             print('Сокет будет закрыт.')
             self.serv_socket.close()
+    
+    def connect_socket(self, socket_type='главный'):
+        socket_available = False
+        while not socket_available:
+            try:
+                socket.connect(self.address)
+                print('Connection: Главный сокет подключён!')
+                socket_available = True
+            except Exception as e:
+                print('Ошибка подключения главного сокета:', e)
+                print('Пробую ещё раз...')
+                time.sleep(0.5)
+        print('Главный сокет подключён!')
     
     def get_game_state(self, options):
         self.send(options)
