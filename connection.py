@@ -5,7 +5,9 @@ import time
 class Conection :
     def __init__(self, url, port):
         self.address = (url, port)
+        print('Открываю главный сокет...')
         self.main_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        print('Открываю сервисный сокет...')
         self.serv_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.main_socket_available = False
         self.serv_socket_available = False
@@ -13,35 +15,43 @@ class Conection :
     def get_start(self):
         return self.recv()
     
-    def sockets_connect(self, fighter_id):
-        print('Connection: подключаю главный сокет...')
-        
-        self.serv_socket.connect(self.address)
-        self.send(fighter_id, self.serv_socket)
-        print(f'Отправлен запрос на создание сервисного сокета для id {fighter_id}...')
-        confirm = self.recv(self.serv_socket)
-        if confirm == 'OK':
-            print(f'сервисный сокет для id {fighter_id} подтверждён.')
+    def serv_socket_connect(self, fighter_id):
+        if not self.serv_socket_available:
+            print('Connection: подключаю сервисный сокет...')
+            self.connect_socket(self.serv_socket, fighter_id)
             self.serv_socket_available = True
-            return True
-        else:
-            print(f'Ошибка подтверждения сервисного сокета для id {fighter_id}!')
-            print(f'Ответ: {confirm}')
-            print('Сокет будет закрыт.')
-            self.serv_socket.close()
-    
-    def connect_socket(self, socket_type='главный'):
-        socket_available = False
-        while not socket_available:
+        
+    def main_socket_connect(self):
+        if not self.main_socket_available:
+            print('Connection: подключаю главный сокет...')
+            self.connect_socket(self.main_socket, 'main')
+            self.main_socket_available = True
+
+    def connect_socket(self, socket, handshake):
+        socket_connected = False
+        while not socket_connected:
             try:
+                print('Connection: подключаю...')
                 socket.connect(self.address)
-                print('Connection: Главный сокет подключён!')
-                socket_available = True
+                print(f'Отправляю handshake {handshake}...')
+                self.send(handshake, socket)
+                print('Ожидаю прдтверждения handshake...')
+                confirm = self.recv(socket)
+                if confirm == 'OK':
+                    print(f'сокет {handshake} подтверждён.')
+                    socket_connected = True
+                else:
+                    print(f'Ошибка подтверждения сокета! handshake: {handshake}')
+                    print(f'Ответ: {confirm}')
+                    print('Сокет будет закрыт.')
+                    self.socket.close()
+                    time.sleep(0.5)
             except Exception as e:
-                print('Ошибка подключения главного сокета:', e)
+                print('Ошибка подключения сокета:', e)
                 print('Пробую ещё раз...')
                 time.sleep(0.5)
-        print('Главный сокет подключён!')
+        print('Connection: сокет подключён!')
+        return socket_connected
     
     def get_game_state(self, options):
         self.send(options)

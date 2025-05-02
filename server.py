@@ -487,6 +487,8 @@ while True:
         for id, player_in_slot in players.items():
             if not player_in_slot:
                 if socket_status == 'main':
+                    print('Отправляю подтверждение главного сокета')
+                    send('OK', player_socket)
                     player = Player(id, player_socket, GRAVITY)
                     players[id] = player
                     connected_players_num += 1

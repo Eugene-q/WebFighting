@@ -208,6 +208,7 @@ def update():
 
 @to_log
 def start_game():
+    server.main_socket_connect()
     start_game_state = server.get_start()
     print(f'start_game: start game state:{start_game_state}')
     global current_fighter_id
@@ -219,9 +220,7 @@ def start_game():
     menu.add_buttons(ring_names, insert_before_existing=True)
     print(f'start_game: В меню добавлены кнопки рингов: {ring_names}')
     # СОЗДАВАТЬ СЕРВИСНЫЙ СОКЕТ ТОЛЬКО ЕСЛИ ПОДКЛЮЧИЛИСЬ ТОЛЬКО ЧТО
-    while not server.set_service_socket(current_fighter_id):
-        log.error('start_game: Попытка повторного создания сервисного сокета через 1 с...')
-        time.sleep(1)
+    server.serv_socket_connect(current_fighter_id)
     # СОЗДАВАТЬ ФАЙТЕРА ТОЛЬКО ЕСЛИ ПОДКЛЮЧИЛИСЬ ТОЛЬКО ЧТО. В start_game_state ВСЕГДА ОДИН ФАЙТЕР!
     create_fighters(start_game_state, show=False)
 
@@ -343,7 +342,8 @@ connected = False
 
 while True:
     threading.Thread(target=start_game).start()
-    
+    #start_game()
+
     print(f'start menu')
     choice = menu.get_choice()
 
