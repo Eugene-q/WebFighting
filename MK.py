@@ -207,11 +207,10 @@ def update():
     epg.tick(FPS)
 
 @to_log
-def start_game():
+def prepare():
     server.main_socket_connect()
     start_game_state = server.get_start()
     print(f'start_game: start game state:{start_game_state}')
-    global current_fighter_id
     current_fighter_id = start_game_state.pop('current_player_id')
     ring_nums = start_game_state.pop('rings')
     ring_names = [f'Ринг на {num}' for num in ring_nums]
@@ -219,10 +218,8 @@ def start_game():
     # ДОБАВЛЯТЬ ТОЛЬКО НОВЫЕ КНОПКИ, ЕСЛИ ОНИ ЕСТЬ
     menu.add_buttons(ring_names, insert_before_existing=True)
     print(f'start_game: В меню добавлены кнопки рингов: {ring_names}')
-    # СОЗДАВАТЬ СЕРВИСНЫЙ СОКЕТ ТОЛЬКО ЕСЛИ ПОДКЛЮЧИЛИСЬ ТОЛЬКО ЧТО
     server.serv_socket_connect(current_fighter_id)
-    # СОЗДАВАТЬ ФАЙТЕРА ТОЛЬКО ЕСЛИ ПОДКЛЮЧИЛИСЬ ТОЛЬКО ЧТО. В start_game_state ВСЕГДА ОДИН ФАЙТЕР!
-    create_fighters(start_game_state, show=False)
+    create_fighters(start_game_state, show=False, main=True)
 
 def get_str_time(int_time):
     seconds = int_time % 60
@@ -231,12 +228,11 @@ def get_str_time(int_time):
     return str_time
 
 @to_log
-def create_fighters(game_state, show=True):
-    global fighters
-    for id, player_pos in game_state.items():
-        print(f'fighter {id} created')
+def create_fighters(game_state, show=True, main=False):
+    global fighters, current_fighter
+    for f_id, player_pos in game_state.items():
         direction, x_pos, y_pos = player_pos
-        fighters.append(Fighter(animation_pathes=FIGHTER_IMAGE_PATHES,
+        fighter = Fighter(animation_pathes=FIGHTER_IMAGE_PATHES,
                         x_pos=x_pos,
                         y_pos=y_pos,
                         flip=direction,
@@ -244,9 +240,13 @@ def create_fighters(game_state, show=True):
                         height=SPRITE_HEIGHT,
                         ground_level=ground_level,
                         gravity=GRAVITY,
-                        id=int(id),
+                        id=int(f_id),
                         show=show,
-                        ))
+                        )
+        fighters.append(fighter)
+        if main:
+            current_fighter = fighter
+        print(f'fighter {f_id} created')
  #   return fighters
 
 @to_log
@@ -254,12 +254,15 @@ def fight():
     print('Старт игры! Количество игроков', len(fighters))
     while True:
         print()
-        game_state = {}
-        for fighter in fighters:
-            if fighter.id == current_fighter_id:
-                options = fighter.check_options()
-                game_state = server.get_game_state(options)
-                log.info(f'Новый кадр: {game_state}')
+        #game_state = {}
+        options = current_fighter.check_options()
+        game_state = server.get_game_state(options)
+        log.info(f'Новый кадр: {game_state}')
+        # for fighter in fighters:
+        #     if fighter.id == current_fighter_id:
+        #         options = fighter.check_options()
+        #         game_state = server.get_game_state(options)
+        #         log.info(f'Новый кадр: {game_state}')
         if game_state == 'finish':
             print('получена команда окончания игры!')
             print(f'скрываю следующих файтеров: {fighters}')
@@ -340,11 +343,15 @@ menu = WebMenu(server,
 
 connected = False
 
-while True:
-    threading.Thread(target=start_game).start()
-    #start_game()
+print('Приложение запущено')
+#threading.Thread(target=start_game).start()
+prepare()
 
-    print(f'start menu')
+while True:
+    print('Устанавливаю стартовое состояние текущего игрока...')
+    current_fighter.apply_game_state(server.recv())
+
+    print(f'Запуск меню')
     choice = menu.get_choice()
 
     if choice == 'выйти':

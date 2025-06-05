@@ -213,7 +213,6 @@ class Player(threading.Thread):
     def run(self):
         self.say('Игрок создан!')
         ###
-        self.set_start()
         self.say('Формирую стартовое сообщение...')
         initial_data = {'current_player_id': self.id,
                         'rings': tuple(rings.keys()),
@@ -231,6 +230,8 @@ class Player(threading.Thread):
             self.say('Устанавливаю стартовое состояние')
             self.set_start()
             # отсюда перенесено перед циклом
+            self.say('Отправляю стартовое состояние клиенту')
+            send(self.get_self_state(), self.socket)
             self.say('Запускаю поток наблюдения за доступностью рингов...')
             threading.Thread(target=self.watch_rings).start()
             self.say('Ожидаю выбор ринга...')
